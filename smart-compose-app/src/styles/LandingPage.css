@@ -1,14 +1,20 @@
-.container{
-    width: 100vh;
+.landing-page{
     display: flex;
     flex-direction: column;
     justify-content: center;
+    margin-left: 0;
+    padding: 0;
 }
 .input-group {
     padding-top: 30px;
+}
+.search-container{
     display: flex;
     justify-content: center;
-    align-items: center;
+}
+.inner-container{
+    width: 100vw;
+    height:170px;
 }
 .form-label{
     margin-left: 15px;
@@ -19,17 +25,19 @@
     padding-right:35px; 
     padding-top: 15px;
 }
-.form-control{
-    padding-top: 20px;
-}
 .form-control :placeholder-shown{
     padding-bottom: 5px;
+}
+.result-container{
+    justify-self: center;
+    align-items: center;
+    background-color: blueviolet;
+    z-index: 1;
 }
 .result{
     margin-left: 13px;
     margin-top: 6px;
 }
 .result td {
-    padding:5px;
+    padding:10px;
 }
-  

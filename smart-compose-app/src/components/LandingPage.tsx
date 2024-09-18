@@ -85,19 +85,25 @@ const LandingPage = () => {
 
 
   return (
-    <div className="container">
-      <div className="input-group w-75">
-        <input type="search" id="form1" className="form-control" placeholder="Search" value={inputValue} onChange={handleInputChange} onKeyDown={handleKeyPress}/>
-        <button type="button" className="btn btn-primary" onClick={searchButtonClick}>
-          <i className="fas fa-search"></i>
-          <label className="form-label" form="form1" id="input">
-            Search
-          </label>
-        </button>
+    <div className="landing-page">
+      <div className="inner-container shadow-sm p-3 my-5  bg-white rounded">
+        <div className="search-container">
+          <div className="input-group w-75">
+            <input type="search" id="form1" className="form-control" placeholder="Search" value={inputValue} onChange={handleInputChange} onKeyDown={handleKeyPress}/>
+            <button type="button" className="btn btn-primary" onClick={searchButtonClick}>
+              <i className="fas fa-search"></i>
+              <label className="form-label" form="form1" id="input">
+                Search
+              </label>
+            </button>
+          </div>
+        </div>
+        <div className="result-container w-75">
+          <table className="result">
+            <tbody>{getRows(data, inputValue)}</tbody>
+          </table>
       </div>
-      <table className="result">
-        <tbody>{getRows(data, inputValue)}</tbody>
-      </table>
+      </div>
     </div>
   );
 };
