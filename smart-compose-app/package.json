@@ -34,26 +34,12 @@
     "extends": [
       "react-app",
       "react-app/jest",
-      "plugin:@typescript-eslint/recommended",
-      "plugin:prettier/recommended"
+      "plugin:@typescript-eslint/recommended"
     ],
     "plugins": [
-      "@typescript-eslint",
-      "prettier"
+      "@typescript-eslint"
     ],
     "rules": {
-      "prettier/prettier": [
-        "error",
-        {
-          "endOfLine": "auto",
-          "singleQuote": false,
-          "semi": true,
-          "tabWidth": 2,
-          "trailingComma": "none",
-          "printWidth":120,
-          "useTabs":false
-        }
-      ],
       "@typescript-eslint/explicit-module-boundary-types": "warn",
       "@typescript-eslint/no-explicit-any": "warn"
     }
@@ -69,10 +55,5 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
-  },
-  "devDependencies": {
-    "eslint-config-prettier": "^9.1.0",
-    "eslint-plugin-prettier": "^5.2.1",
-    "prettier": "^3.3.3"
   }
 }

@@ -1,12 +1,27 @@
-.input-group{
-    padding-top: 30px;
-    display: inline-block;
+.container{
+    width: 100vh;
+    display: flex;
+    flex-direction: column;
     justify-content: center;
+}
+.input-group {
+    padding-top: 30px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 .form-label{
     margin-left: 15px;
+    margin-bottom: 10px;
 }
 .input-group .btn{
-    padding-left:35px;
-    padding-right:45px;
+    padding-left:25px;
+    padding-right:35px; 
+    padding-top: 15px;
+}
+.form-control{
+    padding-top: 20px;
+}
+.result{
+    margin-left: 13px;
 }
