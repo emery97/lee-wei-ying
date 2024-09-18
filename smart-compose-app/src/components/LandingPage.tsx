@@ -3,7 +3,7 @@ import axios from "axios";
 import "../styles/LandingPage.css";
 
 const LandingPage = () => {
-  const [data, setData] = useState<DocumentItem[]>([]);
+  const [data, setData] = useState<string[]>([]);
   const [inputValue, setInputValue] = useState<string>("");
 
   // defining interfaces for the data structure
@@ -35,18 +35,18 @@ const LandingPage = () => {
   // fetching data 
   const fetchData = async(input:string)=>{
     try{
+      setData([]);
       const response = await fetch("https://gist.githubusercontent.com/yuhong90/b5544baebde4bfe9fe2d12e8e5502cbf/raw/44deafab00fc808ed7fa0e59a8bc959d255b9785/queryResult.json")
       if(!response.ok){
         throw new Error("Network response error");
       }
       const result = await response.json();
-      
-      // filtering the object based on the input
-      const newFilteredTexts = result.ResultItems.filter((item: DocumentItem)=>{
-        item.DocumentTitle.Text.toLowerCase().includes(input.toLowerCase())
-      })
-      .map((item:DocumentItem) => item.DocumentTitle.Text);
 
+      // filtering the object based on the input
+      const newFilteredTexts = result.ResultItems.filter((item: DocumentItem) => 
+        item.DocumentTitle.Text.toLowerCase().includes(input.toLowerCase())
+      ).map((item: DocumentItem) => item.DocumentTitle.Text);
+      
       // appending the results to filteredData
       setData(prevData => [...prevData, ...newFilteredTexts]);
     }catch(error){
@@ -67,10 +67,15 @@ const LandingPage = () => {
   };
 
   // dynamically generate rows based on data
-  // const getRows = (data:DocumentItem[])=>{
+  const getRows = (data: string[]) => {
+    console.log(data);
+    return data.map((title, index) => (
+      <tr key={index}>
+        <td>{title}</td>
+      </tr>
+    ));
+  };
 
-  // }
-  
 
   return (
     <div className="container">
@@ -84,8 +89,7 @@ const LandingPage = () => {
         </button>
       </div>
       <table className="result">
-        <tr>result1</tr>
-        <tr>result3</tr>
+        <tbody>{getRows(data)}</tbody>
       </table>
     </div>
   );
