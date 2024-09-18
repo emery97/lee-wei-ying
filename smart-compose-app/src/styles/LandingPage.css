@@ -22,11 +22,14 @@
 .form-control{
     padding-top: 20px;
 }
+.form-control :placeholder-shown{
+    padding-bottom: 5px;
+}
 .result{
     margin-left: 13px;
     margin-top: 6px;
 }
 .result td {
     padding:5px;
-  }
+}
   

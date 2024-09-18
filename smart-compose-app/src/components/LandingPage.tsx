@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import "../styles/LandingPage.css";
+import { title } from "process";
 
 const LandingPage = () => {
   const [data, setData] = useState<string[]>([]);
@@ -67,14 +68,20 @@ const LandingPage = () => {
   };
 
   // dynamically generate rows based on data
-  const getRows = (data: string[]) => {
-    console.log(data);
+  const getRows = (data: string[], input: string) => {
+    const highlightText = (title: string, input: string) => {
+      if (!input) return title; // If input is empty, return the original title
+      const regex = new RegExp(`(${input})`, 'gi'); // Create a case-insensitive regex to match the input
+      return title.replace(regex, '<strong>$1</strong>'); // Replace matching parts with <strong>
+    };
+  
     return data.map((title, index) => (
       <tr key={index}>
-        <td>{title}</td>
+        <td dangerouslySetInnerHTML={{ __html: highlightText(title, input) }} />
       </tr>
     ));
   };
+  
 
 
   return (
@@ -89,7 +96,7 @@ const LandingPage = () => {
         </button>
       </div>
       <table className="result">
-        <tbody>{getRows(data)}</tbody>
+        <tbody>{getRows(data, inputValue)}</tbody>
       </table>
     </div>
   );
