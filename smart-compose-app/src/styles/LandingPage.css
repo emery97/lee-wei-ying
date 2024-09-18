@@ -24,4 +24,9 @@
 }
 .result{
     margin-left: 13px;
+    margin-top: 6px;
 }
+.result td {
+    padding:5px;
+  }
+  
