@@ -25,7 +25,8 @@
 .form-label{
     margin-left: 10px;
 }
-.search-group button{
+
+#search-button{
     display: flex;
     justify-content: center;
     align-items:center;
@@ -36,22 +37,26 @@
 .search-icon{
     margin-bottom:5px;
 }
-
-/*may delete*/
-.result-container {
-    width: 75%; /* Matches the width of the input container */
-    margin-bottom: 10px; /* Space between result and search container */
-    display: flex;
-    justify-content: center;
+.suggestion-container{
+    z-index:2;
 }
-
-.result {
-    width: 100%; /* Ensure the result table spans the full width */
-    margin: 0; /* Remove extra margins */
+.suggestion{
+    position: absolute;
+    top:100%;
+    left: 0;
+    width:100%;
 }
-
-.result td {
-    width: 100%; /* Ensure each table cell fills the full width */
+.suggestion td, .suggestion tr{
     padding: 10px;
-    border-bottom: 1px solid #ccc; /* Optional: for row separation */
+    width:100%;
+    cursor: pointer;
+}  
+
+/* RESULT PAGE*/
+.result-page {
+    margin-left: calc(8%);
+    margin-top: 4px; 
+    width: 75%;
+    position: absolute; 
 }
+
