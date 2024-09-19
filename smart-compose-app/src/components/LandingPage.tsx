@@ -67,30 +67,42 @@ const LandingPage = () => {
   };
 
   // dynamically generate rows based on data
-  const getRows = (data: string[]) => {
-    console.log(data);
+  const getRows = (data: string[], input: string) => {
+    const highlightText = (title: string, input: string) => {
+      if (!input) return title; // If input is empty, return the original title
+      const regex = new RegExp(`(${input})`, 'gi'); // Create a case-insensitive regex to match the input
+      return title.replace(regex, '<strong>$1</strong>'); // Replace matching parts with <strong>
+    };
+  
     return data.map((title, index) => (
       <tr key={index}>
-        <td>{title}</td>
+        <td dangerouslySetInnerHTML={{ __html: highlightText(title, input) }} />
       </tr>
     ));
   };
+  
 
 
   return (
-    <div className="container">
-      <div className="input-group w-75">
-        <input type="search" id="form1" className="form-control" placeholder="Search" value={inputValue} onChange={handleInputChange} onKeyDown={handleKeyPress}/>
-        <button type="button" className="btn btn-primary" onClick={searchButtonClick}>
-          <i className="fas fa-search"></i>
-          <label className="form-label" form="form1" id="input">
-            Search
-          </label>
-        </button>
+    <div className="landing-page">
+      <div className="inner-container shadow-sm p-3 my-5  bg-white rounded">
+        <div className="search-container">
+          <div className="search-group w-75">
+            <input type="search" id="form1" className="form-control" placeholder="Search" value={inputValue} onChange={handleInputChange} onKeyDown={handleKeyPress}/>
+            <button type="button" className="btn btn-primary search-button" onClick={searchButtonClick}>
+              <i className="fas fa-search search-icon"></i>
+              <label className="form-label" form="form1" id="input">
+                Search
+              </label>
+            </button>
+          </div>
+        </div>
+        <div className="result-container w-75">
+          <table className="result">
+            <tbody>{getRows(data, inputValue)}</tbody>
+          </table>
       </div>
-      <table className="result">
-        <tbody>{getRows(data)}</tbody>
-      </table>
+      </div>
     </div>
   );
 };

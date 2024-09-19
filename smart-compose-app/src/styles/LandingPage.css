@@ -1,27 +1,57 @@
-.container{
-    width: 100vh;
+.landing-page {
     display: flex;
     flex-direction: column;
     justify-content: center;
-}
-.input-group {
-    padding-top: 30px;
-    display: flex;
-    justify-content: center;
+    margin-left: 0;
+    padding: 0;
     align-items: center;
 }
+
+.inner-container {
+    width: 100vw;
+    padding: 20px;
+    position: relative; 
+}
+.search-group {
+    width: 100%; 
+    display: flex;
+    justify-content: center;
+}
+.search-container{
+    height:50px;
+    display:flex;
+    justify-content: center;
+}
 .form-label{
-    margin-left: 15px;
-    margin-bottom: 10px;
+    margin-left: 10px;
 }
-.input-group .btn{
-    padding-left:25px;
-    padding-right:35px; 
-    padding-top: 15px;
+.search-group button{
+    display: flex;
+    justify-content: center;
+    align-items:center;
+    flex-direction: row;
+    padding-left:30px;
+    padding-right:30px;
 }
-.form-control{
-    padding-top: 20px;
+.search-icon{
+    margin-bottom:5px;
 }
-.result{
-    margin-left: 13px;
+
+/*may delete*/
+.result-container {
+    width: 75%; /* Matches the width of the input container */
+    margin-bottom: 10px; /* Space between result and search container */
+    display: flex;
+    justify-content: center;
+}
+
+.result {
+    width: 100%; /* Ensure the result table spans the full width */
+    margin: 0; /* Remove extra margins */
+}
+
+.result td {
+    width: 100%; /* Ensure each table cell fills the full width */
+    padding: 10px;
+    border-bottom: 1px solid #ccc; /* Optional: for row separation */
 }
