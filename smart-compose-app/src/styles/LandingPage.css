@@ -25,7 +25,8 @@
 .form-label{
     margin-left: 10px;
 }
-.search-group button{
+
+#search-button{
     display: flex;
     justify-content: center;
     align-items:center;
@@ -37,13 +38,15 @@
     margin-bottom:5px;
 }
 
-.result-container {
+.result{
     position: absolute;
     top:100%;
     left: 0;
-    width:88%;
+    width:100%;
 }
-
-.result td {
+.result td, .result tr{
     padding: 10px;
-}
+    width:100%;
+    cursor: pointer;
+}  
+
