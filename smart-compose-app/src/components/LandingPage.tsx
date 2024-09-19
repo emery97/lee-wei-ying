@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import "../styles/LandingPage.css";
-import { title } from "process";
 
 const LandingPage = () => {
   const [data, setData] = useState<string[]>([]);
@@ -88,10 +87,10 @@ const LandingPage = () => {
     <div className="landing-page">
       <div className="inner-container shadow-sm p-3 my-5  bg-white rounded">
         <div className="search-container">
-          <div className="input-group w-75">
+          <div className="search-group w-75">
             <input type="search" id="form1" className="form-control" placeholder="Search" value={inputValue} onChange={handleInputChange} onKeyDown={handleKeyPress}/>
-            <button type="button" className="btn btn-primary" onClick={searchButtonClick}>
-              <i className="fas fa-search"></i>
+            <button type="button" className="btn btn-primary search-button" onClick={searchButtonClick}>
+              <i className="fas fa-search search-icon"></i>
               <label className="form-label" form="form1" id="input">
                 Search
               </label>

@@ -10,15 +10,34 @@
 .inner-container {
     width: 100vw;
     padding: 20px;
-    position: relative; /* Ensure relative positioning for stacking */
+    position: relative; 
 }
-
-.input-group {
-    width: 100%; /* Ensure the input group takes full width */
+.search-group {
+    width: 100%; 
     display: flex;
     justify-content: center;
 }
+.search-container{
+    height:50px;
+    display:flex;
+    justify-content: center;
+}
+.form-label{
+    margin-left: 10px;
+}
+.search-group button{
+    display: flex;
+    justify-content: center;
+    align-items:center;
+    flex-direction: row;
+    padding-left:30px;
+    padding-right:30px;
+}
+.search-icon{
+    margin-bottom:5px;
+}
 
+/*may delete*/
 .result-container {
     width: 75%; /* Matches the width of the input container */
     margin-bottom: 10px; /* Space between result and search container */
