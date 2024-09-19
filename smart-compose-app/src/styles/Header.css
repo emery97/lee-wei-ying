@@ -1,17 +1,17 @@
 .header img{
-    height:30px;
-    width: 28px;
+    height:25px;
+    width: 23px;
 }
 .header{
     display:flex;
     background-color: #E5E5E5;
     padding-left: 150px;
-    height:35px;
+    height:25px;
     align-items: center;
 }
 .header p{
     color: #5B5B5B;
-    font-size: 16px;
+    font-size: 8px;
     margin-left: 10px;
     margin-top: 15px;
 }

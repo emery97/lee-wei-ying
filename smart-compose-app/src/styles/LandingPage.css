@@ -1,43 +1,38 @@
-.landing-page{
+.landing-page {
     display: flex;
     flex-direction: column;
     justify-content: center;
     margin-left: 0;
     padding: 0;
+    align-items: center;
 }
+
+.inner-container {
+    width: 100vw;
+    padding: 20px;
+    position: relative; /* Ensure relative positioning for stacking */
+}
+
 .input-group {
-    padding-top: 30px;
-}
-.search-container{
+    width: 100%; /* Ensure the input group takes full width */
     display: flex;
     justify-content: center;
 }
-.inner-container{
-    width: 100vw;
-    height:170px;
+
+.result-container {
+    width: 75%; /* Matches the width of the input container */
+    margin-bottom: 10px; /* Space between result and search container */
+    display: flex;
+    justify-content: center;
 }
-.form-label{
-    margin-left: 15px;
-    margin-bottom: 10px;
+
+.result {
+    width: 100%; /* Ensure the result table spans the full width */
+    margin: 0; /* Remove extra margins */
 }
-.input-group .btn{
-    padding-left:25px;
-    padding-right:35px; 
-    padding-top: 15px;
-}
-.form-control :placeholder-shown{
-    padding-bottom: 5px;
-}
-.result-container{
-    justify-self: center;
-    align-items: center;
-    background-color: blueviolet;
-    z-index: 1;
-}
-.result{
-    margin-left: 13px;
-    margin-top: 6px;
-}
+
 .result td {
-    padding:10px;
+    width: 100%; /* Ensure each table cell fills the full width */
+    padding: 10px;
+    border-bottom: 1px solid #ccc; /* Optional: for row separation */
 }
