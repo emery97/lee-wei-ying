@@ -4,9 +4,13 @@ import "../styles/LandingPage.css";
 
 const LandingPage = () => {
   const [data, setData] = useState<string[]>([]);
+  const[resultData, setResultData] = useState<DocumentItem[]>([]);
   const [inputValue, setInputValue] = useState<string>("");
   const [selectedIndex, setSelectedIndex] = useState<number |null>(null);
   const[showResults, setShowResults] = useState<boolean>(true);
+  const[totalResults, setTotalResults] = useState<number>(0);
+  const[resultsPage, setresultsPage] = useState<number>(0);
+  const[resultsPageSize, setresultsPageSize] = useState<number>(0);
 
   // defining interfaces for the data structure
   interface Highlight {
@@ -31,9 +35,6 @@ const LandingPage = () => {
     DocumentURI: string;
   }
   
-  interface ApiResponse {
-    ResultItems: DocumentItem[];
-  }
   // fetching data 
   const fetchData = async(input:string)=>{
     try{
@@ -55,9 +56,40 @@ const LandingPage = () => {
     }
   };
 
+  const fetchResultsData = async (input: string) => {
+    try {
+      setResultData([]);
+      const response = await fetch("https://gist.githubusercontent.com/yuhong90/b5544baebde4bfe9fe2d12e8e5502cbf/raw/44deafab00fc808ed7fa0e59a8bc959d255b9785/queryResult.json");
+      if (!response.ok) {
+        throw new Error("Network response error");
+      }
+      const result = await response.json();
+      const filteredResultData: DocumentItem[] = [];
+      setTotalResults(result.TotalNumberOfResults);
+      setresultsPage(result.Page);
+      setresultsPageSize(result.PageSize);
+      result.ResultItems.forEach((item: DocumentItem) => {
+        // Flatten the object into a single string
+        const itemString = JSON.stringify(item);
+        
+        // Check if the input is present in the flattened string
+        if (itemString.toLowerCase().includes(input.toLowerCase())) {
+          filteredResultData.push(item);
+        }
+      });
+  
+      console.log(filteredResultData);
+      setResultData(filteredResultData);
+    } catch (error) {
+      console.log('Error getting searched results: ', error);
+    }
+  };
+  
+
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) =>{
     setInputValue(event.target.value);
-    fetchData(event.target.value);
+    fetchData(event.target.value); 
+    fetchResultsData(event.target.value);
     setSelectedIndex(null);
   };
   const searchButtonClick = ()=>{
@@ -118,6 +150,12 @@ const LandingPage = () => {
     }
   }, [inputValue]);
 
+  // TO CHECK FETCH RESULTS DELETE !!
+  useEffect(()=>{
+    console.log(resultData);
+    console.log(totalResults);
+  }, [resultData]);
+
   return (
     <div className="landing-page">
       <div className="inner-container shadow-sm p-3 mt-5  bg-white rounded">
@@ -145,6 +183,9 @@ const LandingPage = () => {
               Search
             </label>
           </button>
+        </div>
+        <div className="result-page pt-5">
+          <h6> Showing {resultsPage}-{resultsPageSize} of {totalResults} results</h6>
         </div>
       </div>
     </div>

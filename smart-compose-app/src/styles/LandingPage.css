@@ -50,3 +50,11 @@
     cursor: pointer;
 }  
 
+/* RESULT PAGE*/
+.result-page {
+    margin-left: calc(8%);
+    margin-top: 4px; 
+    width: 75%;
+    position: absolute; 
+}
+
