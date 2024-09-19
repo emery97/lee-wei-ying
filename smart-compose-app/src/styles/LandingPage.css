@@ -37,21 +37,13 @@
     margin-bottom:5px;
 }
 
-/*may delete*/
 .result-container {
-    width: 75%; /* Matches the width of the input container */
-    margin-bottom: 10px; /* Space between result and search container */
-    display: flex;
-    justify-content: center;
-}
-
-.result {
-    width: 100%; /* Ensure the result table spans the full width */
-    margin: 0; /* Remove extra margins */
+    position: absolute;
+    top:100%;
+    left: 0;
+    width:88%;
 }
 
 .result td {
-    width: 100%; /* Ensure each table cell fills the full width */
     padding: 10px;
-    border-bottom: 1px solid #ccc; /* Optional: for row separation */
 }
