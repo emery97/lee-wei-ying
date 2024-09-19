@@ -47,6 +47,9 @@ const LandingPage = () => {
         suggestions.toLowerCase().includes(input.toLowerCase())
       ).slice(0,6);
       setData(filteredData);
+      if(input.trim() === "" || filteredData.length=== 0 ){
+        setData([]);
+      }
     }catch(error){
       console.error("Error getting searched data:",error);
     }
@@ -56,7 +59,6 @@ const LandingPage = () => {
     setInputValue(event.target.value);
     fetchData(event.target.value);
     setSelectedIndex(null);
-    console.log(data);
   };
   const searchButtonClick = ()=>{
     fetchData(inputValue);
