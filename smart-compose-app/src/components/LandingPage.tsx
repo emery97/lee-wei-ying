@@ -36,19 +36,18 @@ const LandingPage = () => {
   const fetchData = async(input:string)=>{
     try{
       setData([]);
-      const response = await fetch("https://gist.githubusercontent.com/yuhong90/b5544baebde4bfe9fe2d12e8e5502cbf/raw/44deafab00fc808ed7fa0e59a8bc959d255b9785/queryResult.json")
+      const response = await fetch("https://gist.githubusercontent.com/yuhong90/b5544baebde4bfe9fe2d12e8e5502cbf/raw/e026dab444155edf2f52122aefbb80347c68de86/suggestion.json")
       if(!response.ok){
         throw new Error("Network response error");
       }
       const result = await response.json();
-
-      // filtering the object based on the input
-      const newFilteredTexts = result.ResultItems.filter((item: DocumentItem) => 
-        item.DocumentTitle.Text.toLowerCase().includes(input.toLowerCase())
-      ).map((item: DocumentItem) => item.DocumentTitle.Text);
-      
-      // appending the results to filteredData
-      setData(prevData => [...prevData, ...newFilteredTexts]);
+      const filteredData = result.suggestions.filter((suggestions:string) =>
+        suggestions.toLowerCase().includes(input.toLowerCase())
+      );
+      if(filteredData.length === 0){
+        alert('Data not found, please re-enter');
+      }
+      setData(prevData => [...prevData, ...filteredData]);
     }catch(error){
       console.error("Error getting searched data:",error);
     }
@@ -101,7 +100,7 @@ const LandingPage = () => {
           <table className="result">
             <tbody>{getRows(data, inputValue)}</tbody>
           </table>
-      </div>
+        </div>
       </div>
     </div>
   );
