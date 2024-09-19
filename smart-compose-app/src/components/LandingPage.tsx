@@ -89,12 +89,19 @@ const LandingPage = () => {
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) =>{
     setInputValue(event.target.value);
     fetchData(event.target.value); 
-    fetchResultsData(event.target.value);
+    // UNCOMMENT
+    //fetchResultsData(event.target.value);
     setSelectedIndex(null);
   };
   const searchButtonClick = ()=>{
     fetchData(inputValue);
-    if (inputValue.trim() !== " " && data.length === 0) {
+    // DELETE
+    fetchResultsData(inputValue);
+    if(resultData.length!==0){
+      createResults(resultData,inputValue);
+    }
+
+    if (inputValue.trim() !== " " && data.length === 0 && resultData.length===0) {
       alert('Data not found, please re-enter');
     }
   };
@@ -141,6 +148,21 @@ const LandingPage = () => {
     ));
   };
 
+   // Creating the outlook for results 
+   function createResults(data: DocumentItem[], input:string) {
+    return (
+      <div className="results-container">
+        {data.map((item, index) => (
+          <div key={index} className="result-block">
+            <p className="title">{item.DocumentTitle.Text}</p>
+            <p className="excerpt">{item.DocumentExcerpt.Text}</p>
+            <p className="uri">{item.DocumentURI}</p>
+          </div>
+        ))}
+      </div>
+    );
+  }
+
   // for when user types >2 characters in search bar
   useEffect(()=>{
     if(inputValue.length>2){
@@ -153,7 +175,6 @@ const LandingPage = () => {
   // TO CHECK FETCH RESULTS DELETE !!
   useEffect(()=>{
     console.log(resultData);
-    console.log(totalResults);
   }, [resultData]);
 
   return (
@@ -171,8 +192,8 @@ const LandingPage = () => {
               onKeyDown={handleKeyPress} 
               autoComplete="off"
             />
-            <div className="result-container">
-              <table className="shadow-sm bg-white result" style={{display: showResults ?'block' :'none'}}>
+            <div className="suggestion-container">
+              <table className="shadow-sm bg-white suggestion" style={{display: showResults ?'block' :'none'}}>
                 <tbody>{getRows(data, inputValue)}</tbody>
               </table>
             </div>
@@ -186,6 +207,11 @@ const LandingPage = () => {
         </div>
         <div className="result-page pt-5">
           <h6> Showing {resultsPage}-{resultsPageSize} of {totalResults} results</h6>
+          <div>
+            {resultData.length > 0
+              ? createResults(resultData, inputValue)
+              : 'No results to display'}
+          </div>
         </div>
       </div>
     </div>

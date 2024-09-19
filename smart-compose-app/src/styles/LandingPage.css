@@ -37,14 +37,16 @@
 .search-icon{
     margin-bottom:5px;
 }
-
-.result{
+.suggestion-container{
+    z-index:2;
+}
+.suggestion{
     position: absolute;
     top:100%;
     left: 0;
     width:100%;
 }
-.result td, .result tr{
+.suggestion td, .suggestion tr{
     padding: 10px;
     width:100%;
     cursor: pointer;
