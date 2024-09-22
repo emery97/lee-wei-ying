@@ -1,6 +1,88 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
 import "../styles/LandingPage.css";
+
+// defining interfaces for the data structure
+interface Highlight {
+  BeginOffset: number;
+  EndOffset: number;
+}
+
+interface DocumentTitle {
+  Text: string;
+  Highlights: Highlight[];
+}
+
+interface DocumentExcerpt {
+  Text: string;
+  Highlights: Highlight[];
+}
+
+interface DocumentItem {
+  DocumentId: string;
+  DocumentTitle: DocumentTitle;
+  DocumentExcerpt: DocumentExcerpt;
+  DocumentURI: string;
+}
+// exporting the fetchData function separately
+// fetches suggestions data
+export const fetchData = async (input: string, setData: React.Dispatch<React.SetStateAction<string[]>>) => {
+  try {
+    setData([]);
+    const response = await fetch(
+      "https://gist.githubusercontent.com/yuhong90/b5544baebde4bfe9fe2d12e8e5502cbf/raw/e026dab444155edf2f52122aefbb80347c68de86/suggestion.json"
+    );
+    if (!response.ok) {
+      throw new Error("Network response error");
+    }
+    const result = await response.json();
+    console.log(result);
+    const filteredData = result.suggestions
+      .filter((suggestion: string) => suggestion.toLowerCase().includes(input.toLowerCase()))
+      .slice(0, 6);
+    setData(filteredData);
+    console.log(`${filteredData}`);
+    if (input.trim() === "" || filteredData.length === 0) {
+      setData([]);
+    }
+  } catch (error) {
+    console.error("Error getting searched data:", error);
+  }
+};
+
+// fetching result data
+export const fetchResultsData = async (
+  input: string, 
+  setResultData: React.Dispatch<React.SetStateAction<DocumentItem[]>>, 
+  setTotalResults: React.Dispatch<React.SetStateAction<number>>,
+  setresultsPage: React.Dispatch<React.SetStateAction<number>>, 
+  setresultsPageSize: React.Dispatch<React.SetStateAction<number>>) => {
+  try {
+    setResultData([]);
+    const response = await fetch("https://gist.githubusercontent.com/yuhong90/b5544baebde4bfe9fe2d12e8e5502cbf/raw/44deafab00fc808ed7fa0e59a8bc959d255b9785/queryResult.json");
+    if (!response.ok) {
+      throw new Error("Network response error");
+    }
+    const result = await response.json();
+    const filteredResultData: DocumentItem[] = [];
+    setTotalResults(result.TotalNumberOfResults);
+    setresultsPage(result.Page);
+    setresultsPageSize(result.PageSize);
+
+    result.ResultItems.forEach((item: DocumentItem) => {
+      // Check if the DocumentExcerpt.Text contains the input
+      if (item.DocumentExcerpt.Text.toLowerCase().includes(input.toLowerCase())) {
+        filteredResultData.push(item);
+      }else if (item.DocumentTitle.Text.toLowerCase().includes(input.toLowerCase())) {
+        filteredResultData.push(item);
+      }
+    });
+
+    // console.log(filteredResultData);
+    setResultData(filteredResultData);
+  } catch (error) {
+    console.log('Error getting searched results: ', error);
+  }
+};
 
 const LandingPage = () => {
   const [data, setData] = useState<string[]>([]);
@@ -11,92 +93,19 @@ const LandingPage = () => {
   const[totalResults, setTotalResults] = useState<number>(0);
   const[resultsPage, setresultsPage] = useState<number>(0);
   const[resultsPageSize, setresultsPageSize] = useState<number>(0);
-
-  // defining interfaces for the data structure
-  interface Highlight {
-    BeginOffset: number;
-    EndOffset: number;
-  }
   
-  interface DocumentTitle {
-    Text: string;
-    Highlights: Highlight[];
-  }
-  
-  interface DocumentExcerpt {
-    Text: string;
-    Highlights: Highlight[];
-  }
-  
-  interface DocumentItem {
-    DocumentId: string;
-    DocumentTitle: DocumentTitle;
-    DocumentExcerpt: DocumentExcerpt;
-    DocumentURI: string;
-  }
-  
-  // fetching data 
-  const fetchData = async(input:string)=>{
-    try{
-      setData([]);
-      const response = await fetch("https://gist.githubusercontent.com/yuhong90/b5544baebde4bfe9fe2d12e8e5502cbf/raw/e026dab444155edf2f52122aefbb80347c68de86/suggestion.json")
-      if(!response.ok){
-        throw new Error("Network response error");
-      }
-      const result = await response.json();
-      const filteredData = result.suggestions.filter((suggestions:string) =>
-        suggestions.toLowerCase().includes(input.toLowerCase())
-      ).slice(0,6);
-      setData(filteredData);
-      if(input.trim() === "" || filteredData.length=== 0 ){
-        setData([]);
-      }
-    }catch(error){
-      console.error("Error getting searched data:",error);
-    }
-  };
-
-  const fetchResultsData = async (input: string) => {
-    try {
-      setResultData([]);
-      const response = await fetch("https://gist.githubusercontent.com/yuhong90/b5544baebde4bfe9fe2d12e8e5502cbf/raw/44deafab00fc808ed7fa0e59a8bc959d255b9785/queryResult.json");
-      if (!response.ok) {
-        throw new Error("Network response error");
-      }
-      const result = await response.json();
-      const filteredResultData: DocumentItem[] = [];
-      setTotalResults(result.TotalNumberOfResults);
-      setresultsPage(result.Page);
-      setresultsPageSize(result.PageSize);
-      result.ResultItems.forEach((item: DocumentItem) => {
-        // Flatten the object into a single string
-        const itemString = JSON.stringify(item);
-        
-        // Check if the input is present in the flattened string
-        if (itemString.toLowerCase().includes(input.toLowerCase())) {
-          filteredResultData.push(item);
-        }
-      });
-  
-      console.log(filteredResultData);
-      setResultData(filteredResultData);
-    } catch (error) {
-      console.log('Error getting searched results: ', error);
-    }
-  };
-  
-
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) =>{
     setInputValue(event.target.value);
-    fetchData(event.target.value); 
+    fetchData(event.target.value, setData); 
     // UNCOMMENT
     //fetchResultsData(event.target.value);
     setSelectedIndex(null);
+    setShowResults(true);
   };
   const searchButtonClick = ()=>{
-    fetchData(inputValue);
+    fetchData(inputValue,setData);
     // DELETE
-    fetchResultsData(inputValue);
+    fetchResultsData(inputValue,setResultData,setTotalResults,setresultsPage,setresultsPageSize);
     if(resultData.length!==0){
       createResults(resultData,inputValue);
     }
@@ -120,6 +129,11 @@ const LandingPage = () => {
       event.preventDefault();
       if (selectedIndex !== null) {
         handleSelectSuggestion(data[selectedIndex]); 
+      }
+      setShowResults(false);
+      fetchResultsData(inputValue,setResultData,setTotalResults,setresultsPage,setresultsPageSize);
+      if(resultData.length!==0){
+        createResults(resultData,inputValue);
       }
     }
   };
@@ -148,34 +162,55 @@ const LandingPage = () => {
     ));
   };
 
-   // Creating the outlook for results 
-   function createResults(data: DocumentItem[], input:string) {
+  function generateRandomDate() {
+    const start = new Date(2024, 0, 1); // start from Jan 1, 2024
+    const end = new Date(); // Until the current date
+    const randomDate = new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime()));
+  
+    // format the date as "1 Sep 2021"
+    const options:Intl.DateTimeFormatOptions = { day: 'numeric', month: 'short', year: 'numeric' };
+    return randomDate.toLocaleDateString('en-GB', options);
+  }
+
+  function highlight(content: string, input: string) {
+    if (!input.trim()) return content;
+    const regex = new RegExp(`(${input})`, 'gi'); 
+    return content.replace(regex, '<strong>$1</strong>');
+  }
+  
+   // creating the outlook for results 
+   function createResults(data: DocumentItem[], input: string) {
     return (
       <div className="results-container">
         {data.map((item, index) => (
           <div key={index} className="result-block">
-            <p className="title">{item.DocumentTitle.Text}</p>
-            <p className="excerpt">{item.DocumentExcerpt.Text}</p>
-            <p className="uri">{item.DocumentURI}</p>
+            <p className="title text-primary">{item.DocumentTitle.Text}</p>
+            <p
+              className="excerpt"
+              dangerouslySetInnerHTML={{
+                __html: `${generateRandomDate()} — ${highlight(item.DocumentExcerpt.Text.replace("...", " "), input)}`
+              }}
+            />
+            <a
+              className="uri"
+              href={item.DocumentURI}
+            >
+              {item.DocumentURI}
+            </a>
           </div>
         ))}
       </div>
     );
   }
-
+    
   // for when user types >2 characters in search bar
   useEffect(()=>{
     if(inputValue.length>2){
-      fetchData(inputValue);
+      fetchData(inputValue, setData);
     }else{
       setData([]);
     }
   }, [inputValue]);
-
-  // TO CHECK FETCH RESULTS DELETE !!
-  useEffect(()=>{
-    console.log(resultData);
-  }, [resultData]);
 
   return (
     <div className="landing-page">

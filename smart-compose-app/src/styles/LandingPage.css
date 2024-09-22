@@ -8,7 +8,7 @@
 }
 
 .inner-container {
-    width: 100vw;
+    width: 100%;
     padding: 20px;
     position: relative; 
 }
@@ -58,5 +58,26 @@
     margin-top: 4px; 
     width: 75%;
     position: absolute; 
+    overflow-x: hidden;
+}
+.results-container{
+    padding-top: 30px;
+}
+.title{
+    font-weight: 700;
+    font-size: 17px;
+    margin-bottom: 10px;
+}
+.excerpt{
+    font-size: 12px;
+    margin-bottom:5px;
+}
+.uri{
+    text-decoration: none;
+    color:black;
+    font-size: 10px;
+    cursor: pointer;
+    display: inline-block;
+    margin-bottom: 30px;
 }
 
