@@ -118,12 +118,10 @@ const LandingPage = () => {
     if(resultData.length!==0){
       createResults(resultData,inputValue);
     }
-
     if (inputValue.trim() !== " " && data.length === 0 && resultData.length===0) {
       alert('Data not found, please re-enter');
       setNoResults(true);
     }
-    console.log(`resultsdata : ${resultData.length}\ninput value : ${inputValue}`);
   };
 
   const handleKeyPress = async (event: React.KeyboardEvent<HTMLInputElement>) => {
@@ -153,6 +151,7 @@ const LandingPage = () => {
   
       // Handle no results found
       if (selectedSuggestion.trim() === "" || resultData.length === 0) {
+        alert('Data not found, please re-enter');
         setNoResults(true);
       } else {
         setNoResults(false);
