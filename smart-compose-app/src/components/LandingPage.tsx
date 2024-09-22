@@ -23,7 +23,7 @@ interface DocumentItem {
   DocumentExcerpt: DocumentExcerpt;
   DocumentURI: string;
 }
-// exporting the fetchData function separately
+// exporting the functions separately
 // fetches suggestions data
 export const fetchData = async (input: string, setData: React.Dispatch<React.SetStateAction<string[]>>) => {
   try {
@@ -40,7 +40,6 @@ export const fetchData = async (input: string, setData: React.Dispatch<React.Set
       .filter((suggestion: string) => suggestion.toLowerCase().includes(input.toLowerCase()))
       .slice(0, 6);
     setData(filteredData);
-    console.log(`${filteredData}`);
     if (input.trim() === "" || filteredData.length === 0) {
       setData([]);
     }
@@ -55,8 +54,13 @@ export const fetchResultsData = async (
   setResultData: React.Dispatch<React.SetStateAction<DocumentItem[]>>, 
   setTotalResults: React.Dispatch<React.SetStateAction<number>>,
   setresultsPage: React.Dispatch<React.SetStateAction<number>>, 
-  setresultsPageSize: React.Dispatch<React.SetStateAction<number>>) => {
+  setresultsPageSize: React.Dispatch<React.SetStateAction<number>>
+) => {
   try {
+    if (input.length === 0 ) {
+      setResultData([]); 
+      return; // exit early
+    }
     setResultData([]);
     const response = await fetch("https://gist.githubusercontent.com/yuhong90/b5544baebde4bfe9fe2d12e8e5502cbf/raw/44deafab00fc808ed7fa0e59a8bc959d255b9785/queryResult.json");
     if (!response.ok) {
@@ -67,17 +71,13 @@ export const fetchResultsData = async (
     setTotalResults(result.TotalNumberOfResults);
     setresultsPage(result.Page);
     setresultsPageSize(result.PageSize);
-
     result.ResultItems.forEach((item: DocumentItem) => {
-      // Check if the DocumentExcerpt.Text contains the input
       if (item.DocumentExcerpt.Text.toLowerCase().includes(input.toLowerCase())) {
         filteredResultData.push(item);
       }else if (item.DocumentTitle.Text.toLowerCase().includes(input.toLowerCase())) {
         filteredResultData.push(item);
       }
     });
-
-    // console.log(filteredResultData);
     setResultData(filteredResultData);
   } catch (error) {
     console.log('Error getting searched results: ', error);
@@ -90,31 +90,32 @@ const LandingPage = () => {
   const [inputValue, setInputValue] = useState<string>("");
   const [selectedIndex, setSelectedIndex] = useState<number |null>(null);
   const[showResults, setShowResults] = useState<boolean>(true);
+  const [noResults, setNoResults] = useState<boolean>(false); // this is for "no results found"
   const[totalResults, setTotalResults] = useState<number>(0);
   const[resultsPage, setresultsPage] = useState<number>(0);
   const[resultsPageSize, setresultsPageSize] = useState<number>(0);
   
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) =>{
     setInputValue(event.target.value);
-    fetchData(event.target.value, setData); 
-    // UNCOMMENT
-    //fetchResultsData(event.target.value);
     setSelectedIndex(null);
     setShowResults(true);
   };
-  const searchButtonClick = ()=>{
-    fetchData(inputValue,setData);
-    // DELETE
-    fetchResultsData(inputValue,setResultData,setTotalResults,setresultsPage,setresultsPageSize);
+  const searchButtonClick = async()=>{
+    await fetchData(inputValue,setData);
+    setShowResults(false);
+    setNoResults(false);
+    await fetchResultsData(inputValue,setResultData,setTotalResults,setresultsPage,setresultsPageSize);
     if(resultData.length!==0){
       createResults(resultData,inputValue);
     }
 
     if (inputValue.trim() !== " " && data.length === 0 && resultData.length===0) {
       alert('Data not found, please re-enter');
+      setNoResults(true);
     }
+    console.log(`resultsdata : ${resultData.length}\ninput value : ${inputValue}`);
   };
-  const handleKeyPress = (event: React.KeyboardEvent<HTMLInputElement>) => {
+  const handleKeyPress = async (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.key === 'ArrowDown') {
       event.preventDefault();
       setSelectedIndex((prevIndex) => 
@@ -127,29 +128,41 @@ const LandingPage = () => {
       );
     } else if (event.key === 'Enter') {
       event.preventDefault();
-      if (selectedIndex !== null) {
-        handleSelectSuggestion(data[selectedIndex]); 
+      
+      // Check if a suggestion is selected
+      let selectedSuggestion = inputValue;
+      if (selectedIndex !== null && data[selectedIndex]) {
+        selectedSuggestion = data[selectedIndex]; 
+        handleSelectSuggestion(selectedSuggestion); // updates the input with the selected suggestion
       }
+      await fetchResultsData(selectedSuggestion, setResultData, setTotalResults, setresultsPage, setresultsPageSize);
       setShowResults(false);
-      fetchResultsData(inputValue,setResultData,setTotalResults,setresultsPage,setresultsPageSize);
-      if(resultData.length!==0){
-        createResults(resultData,inputValue);
+  
+      if (selectedSuggestion.trim() !== "" && data.length === 0 && resultData.length === 0) {
+        alert('Data not found, please re-enter');
+      } else if (resultData.length > 0) {
+        createResults(resultData, selectedSuggestion);
       }
     }
   };
-
-  const handleSelectSuggestion= (suggestion:string) =>{
-    setInputValue(suggestion);
-    setData([]);
-    setSelectedIndex(null);
+  
+  const handleSelectSuggestion = (suggestion: string) => {
+    setInputValue(suggestion); 
+    searchButtonClick();
+  };
+  
+  function highlight(content: string, input: string) {
+    if (!input.trim()) return content;
+    const regex = new RegExp(`(${input})`, 'gi'); 
+    return content.replace(regex, '<strong>$1</strong>');
   }
 
-  // dynamically generate rows based on data
+  // dynamically generate suggestion rows based on data
   const getRows = (data: string[], input: string) => {
     const highlightText = (title: string, input: string) => {
       if (!input) return title; // If input is empty, return the original title
-      const regex = new RegExp(`(${input})`, 'gi'); // Create a case-insensitive regex to match the input
-      return title.replace(regex, '<strong>$1</strong>'); // Replace matching parts with <strong>
+      const regex = new RegExp(`(${input})`, 'gi');
+      return title.replace(regex, '<strong>$1</strong>'); 
     };
 
     return data.map((title, index) => (
@@ -162,6 +175,7 @@ const LandingPage = () => {
     ));
   };
 
+  // for results
   function generateRandomDate() {
     const start = new Date(2024, 0, 1); // start from Jan 1, 2024
     const end = new Date(); // Until the current date
@@ -170,12 +184,6 @@ const LandingPage = () => {
     // format the date as "1 Sep 2021"
     const options:Intl.DateTimeFormatOptions = { day: 'numeric', month: 'short', year: 'numeric' };
     return randomDate.toLocaleDateString('en-GB', options);
-  }
-
-  function highlight(content: string, input: string) {
-    if (!input.trim()) return content;
-    const regex = new RegExp(`(${input})`, 'gi'); 
-    return content.replace(regex, '<strong>$1</strong>');
   }
   
    // creating the outlook for results 
@@ -199,8 +207,8 @@ const LandingPage = () => {
             </a>
           </div>
         ))}
-      </div>
-    );
+      </div>  
+  );
   }
     
   // for when user types >2 characters in search bar
@@ -209,8 +217,15 @@ const LandingPage = () => {
       fetchData(inputValue, setData);
     }else{
       setData([]);
+      setResultData([]);
     }
   }, [inputValue]);
+  useEffect(()=>{
+    if(resultData.length>0){
+      createResults(resultData, inputValue);
+
+    }
+  },[resultData]);
 
   return (
     <div className="landing-page">
@@ -241,11 +256,17 @@ const LandingPage = () => {
           </button>
         </div>
         <div className="result-page pt-5">
-          <h6> Showing {resultsPage}-{resultsPageSize} of {totalResults} results</h6>
-          <div>
-            {resultData.length > 0
-              ? createResults(resultData, inputValue)
-              : 'No results to display'}
+          {resultData.length > 0 && (
+            <h6>
+              Showing {resultsPage}-{resultsPageSize} of {totalResults} results
+            </h6>
+          )}
+          <div id="result-content">
+          {noResults==true ? (
+              'No results to display'
+            ) : (
+              resultData.length > 0 ? createResults(resultData, inputValue) : ''
+            )}
           </div>
         </div>
       </div>
