@@ -100,6 +100,17 @@ const LandingPage = () => {
     setSelectedIndex(null);
     setShowResults(true);
   };
+  // for when user types >2 characters in search bar
+  useEffect(()=>{
+    if(inputValue.length>2){
+      fetchData(inputValue, setData);
+      fetchResultsData(inputValue, setResultData, setTotalResults, setresultsPage, setresultsPageSize);
+    }else{
+      setData([]);
+      setResultData([]);
+    }
+  }, [inputValue]);
+
   const searchButtonClick = async()=>{
     await fetchData(inputValue,setData);
     setShowResults(false);
@@ -115,6 +126,7 @@ const LandingPage = () => {
     }
     console.log(`resultsdata : ${resultData.length}\ninput value : ${inputValue}`);
   };
+
   const handleKeyPress = async (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.key === 'ArrowDown') {
       event.preventDefault();
@@ -132,20 +144,22 @@ const LandingPage = () => {
       // Check if a suggestion is selected
       let selectedSuggestion = inputValue;
       if (selectedIndex !== null && data[selectedIndex]) {
-        selectedSuggestion = data[selectedIndex]; 
-        handleSelectSuggestion(selectedSuggestion); // updates the input with the selected suggestion
+        selectedSuggestion = data[selectedIndex];
       }
+      
+      // Set the input value and fetch results
+      setInputValue(selectedSuggestion);
       await fetchResultsData(selectedSuggestion, setResultData, setTotalResults, setresultsPage, setresultsPageSize);
       setShowResults(false);
   
-      if (selectedSuggestion.trim() !== "" && data.length === 0 && resultData.length === 0) {
-        alert('Data not found, please re-enter');
-      } else if (resultData.length > 0) {
-        createResults(resultData, selectedSuggestion);
+      // Handle no results found
+      if (selectedSuggestion.trim() === "" || resultData.length === 0) {
+        setNoResults(true);
+      } else {
+        setNoResults(false);
       }
     }
   };
-  
   const handleSelectSuggestion = (suggestion: string) => {
     setInputValue(suggestion); 
     searchButtonClick();
@@ -210,22 +224,6 @@ const LandingPage = () => {
       </div>  
   );
   }
-    
-  // for when user types >2 characters in search bar
-  useEffect(()=>{
-    if(inputValue.length>2){
-      fetchData(inputValue, setData);
-    }else{
-      setData([]);
-      setResultData([]);
-    }
-  }, [inputValue]);
-  useEffect(()=>{
-    if(resultData.length>0){
-      createResults(resultData, inputValue);
-
-    }
-  },[resultData]);
 
   return (
     <div className="landing-page">
