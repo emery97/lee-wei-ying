@@ -193,7 +193,7 @@ const LandingPage = () => {
     const end = new Date(); // Until the current date
     const randomDate = new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime()));
   
-    // format the date as "1 Sep 2021"
+    // format the date as "19 Sep 2024"
     const options:Intl.DateTimeFormatOptions = { day: 'numeric', month: 'short', year: 'numeric' };
     return randomDate.toLocaleDateString('en-GB', options);
   }
