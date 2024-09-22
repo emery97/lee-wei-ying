@@ -35,7 +35,6 @@ export const fetchData = async (input: string, setData: React.Dispatch<React.Set
       throw new Error("Network response error");
     }
     const result = await response.json();
-    console.log(result);
     const filteredData = result.suggestions
       .filter((suggestion: string) => suggestion.toLowerCase().includes(input.toLowerCase()))
       .slice(0, 6);
@@ -162,7 +161,7 @@ const LandingPage = () => {
   };
   const handleSelectSuggestion = (suggestion: string) => {
     setInputValue(suggestion); 
-    searchButtonClick();
+    setShowResults(false);
   };
   
   function highlight(content: string, input: string) {
